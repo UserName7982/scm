@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${name} + ' Dashboard'">Profile Page</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <div id="content">
+        <!-- Sidebar -->
+        <div th:if="${user}">
+            <div th:replace="~{user/sidebar :: sidebar}"></div>
+        </div>
+
+        <!-- Profile Content -->
+        <div class="container mx-auto mt-10 ">
+            <div class="flex justify-center">
+                <div class="w-full max-w-3xl">
+                    <div class="bg-white shadow-lg dark:bg-gray-800 rounded-lg overflow-hidden">
+                        <div class="bg-indigo-600 p-4">
+                            <h3 class="text-center text-white text-2xl font-semibold">User Profile</h3>
+                        </div>
+                        <div class="p-6 text-center">
+                            <!-- Profile Picture -->
+                            <img th:if="${user.profilepic != null}" th:src="@{${user.profilepic}}" alt="Profile Picture"
+                                class="mx-auto rounded-full mb-4 border-4 border-indigo-600" width="150">
+
+                            <img th:if="${user.profilepic == null}" th:src="@{/images/user.png}"
+                                alt="Default Profile Picture"
+                                class="mx-auto rounded-full mb-4 border-4 border-indigo-600" width="150">
+
+
+                            <!-- User Details -->
+                            <h4 th:text="${user.name}" class="text-xl font-semibold mb-2">Username</h4>
+                            <p th:text="'Email: ' + ${user.email}" class="text-gray-600">Email: user@example.com</p>
+                            <p th:text="'Phone Number: ' + ${user.phoneno}" class="text-gray-600">Phone Number:
+                                123-456-7890</p>
+                            <p th:text="'About: ' + ${user.about}" class="text-gray-600 mb-4">About: A short bio about
+                                the user...</p>
+
+                            <!-- Account Status -->
+                            <p class="mb-2">
+                                <span class="font-semibold">Account Status:</span>
+                                <span th:text="${user.enabled} ? 'Enabled' : 'Disabled'"
+                                    class="text-indigo-600">Disabled</span>
+                            </p>
+
+                            <!-- Email Verified -->
+                            <p class="mb-6">
+                                <span class="font-semibold">Email Verified:</span>
+                                <span th:text="${user.emailverified == 'true' ? 'Yes' : 'No' }"
+                                    class="text-indigo-600">No</span>
+                            </p>
+
+                            <!-- Edit Profile Button -->
+                            <a href="#"
+                                class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-500 transition duration-300">Edit
+                                Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tailwind JS (for future JS functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.1/dist/cdn.min.js" defer></script>
+</body>
+
+</html>

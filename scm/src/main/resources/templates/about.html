@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+<head>
+    <title>About</title>
+ </head>
+ <body>
+    <div id="content">
+        <section class="body">
+            <div class="about-section ">
+              <h1>About Us</h1>
+              <p><pre class="text-white">Welcome to the Smart Contact Manager, your ultimate tool for efficiently managing and organizing your contacts. 
+       This web application is designed to help you keep track of your contacts, streamline communication, and stay organized in today's fast-paced world.</pre></p>
+              <p>Our mission is to provide you with a seamless contact management experience that simplifies the way you connect with people. With Smart Contact Manager, you can spend less time searching for contact details and more time building meaningful relationships.</p>
+            </div> 
+            
+            <div class="container mt-3 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                       <h2 class="text-center mb-3">Key Features</h2>
+                       <div class="text-center">
+                       <p>Contact Organization : Store, categorize, and manage your contacts in a structured and intuitive way.</p>
+                       <p>Efficient Search:Quickly find the contacts you need using powerful search and filtering options.</p>
+                       <p>User-Friendly Interface:Our user-centric design ensures an easy and enjoyable experience for all users.</p>
+                       <p>Image Upload:Attach profile images to your contacts for easy visual identification.</p>
+                       <p>Secure Data:Your contact information is stored securely to ensure your privacy and peace of mind.</p>
+                       <p>Responsive Design:Access your contacts from any device, whether it's a computer, tablet, or smartphone.</p>
+                       <p>Collaboration:Share contacts seamlessly with colleagues and friends, enhancing teamwork and networking.</p>
+                       </div>
+                    </div>
+                </div>
+            </div> 
+            
+        <h2 style="text-align:center">Our Team</h2>
+        <div class="row ml-3">
+                       <div class="column">
+                          <div class="card">
+                          <img src="/images/person3.jpeg" alt="Jane" style="width:100%">
+                          <div class="container">
+                          <h2>Jane Doe</h2>
+                           <p class="title">CEO & Founder</p>
+                           <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                           <p>jane@example.com</p>
+                         <p><button class="button">Contact</button></p>
+                         </div>
+                       </div>
+                     </div>  
+                    
+       
+               <div class="column">
+                   <div class="card">
+                       <img src="/images/person.jpg" alt="Mike" style="width: 100%">
+                       <div class="container">
+                           <h2>Mike Ross</h2>
+                           <p class="title">Art Director</p>
+                           <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+                           <p>mike@example.com</p>
+                           <p>
+                               <button class="button">Contact</button>
+                           </p>
+                       </div>
+                   </div>
+               </div>
+               
+       <div class="column">
+           <div class="card">
+             <img src="/images/person1.jpeg" alt="John" style="width:100%">
+             <div class="container">
+               <h2>John Doe</h2>
+               <p class="title">Designer</p>
+               <p>Some text that describes me lorem ipsum ipsum lorem.</p>
+               <p>john@example.com</p>
+               <p><button class="button">Contact</button></p>
+             </div>
+           </div>
+         </div>
+        </div>	
+         <script>
+             $(document).ready(()=>{
+               $(".item").removeClass("active1");
+               $("#about2").addClass("active1");
+             });
+             
+         </script>	
+       </section>
+    </div>
+</body>
+</html>
