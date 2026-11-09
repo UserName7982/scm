@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+  <head>
+    <title>Home</title>
+
+    <!-- Tailwind CDN (official) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/js/all.min.js"
+    ></script>
+
+    <style>
+      /* Watermark as a pseudo-layer so it doesn't reduce content opacity */
+      .watermarked-wrap {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+      }
+      .watermarked-wrap::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url("your-watermark-image-url.jpg"); /* replace */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.08; /* watermark strength */
+        pointer-events: none; /* clickable content stays clickable */
+        z-index: 0;
+        filter: grayscale(100%);
+      }
+      .watermarked-wrap > * {
+        position: relative;
+        z-index: 1;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 transition-colors duration-300"
+  >
+    <div id="content" class="max-w-5xl mx-auto mt-6 px-4">
+      <div
+        class="watermarked-wrap bg-white/70 dark:bg-gray-950/60 backdrop-blur border border-gray-200/60 dark:border-gray-800 shadow-lg"
+      >
+        <!-- HERO -->
+        <section class="px-6 sm:px-10 py-14">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <span
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm bg-white text-blue-700 dark:bg-blue-950 dark:text-blue-900 border border-blue-100/70 dark:border-blue-900/60"
+              >
+                <i class="fa-solid fa-shield-halved"></i>
+                Secure • Fast • Simple
+              </span>
+
+              <h1
+                class="mt-5 text-4xl sm:text-5xl font-extrabold tracking-tight"
+              >
+                Smart Contact Manager
+              </h1>
+
+              <p
+                class="mt-4 text-lg text-gray-600 dark:text-gray-300 leading-relaxed"
+              >
+                Add, organize, search, and share contacts effortlessly — with a
+                clean UI and quick access to what matters.
+              </p>
+
+              <div class="mt-7 flex flex-col sm:flex-row gap-3">
+                <a
+                  th:href="@{/user/contacts/add}"
+                  class="inline-flex justify-center items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-blue-600 text-white hover:bg-blue-700 transition shadow"
+                >
+                  <i class="fa-solid fa-user-plus"></i>
+                  Add New Contact
+                </a>
+
+                <a
+                  th:href="@{/register}"
+                  class="inline-flex justify-center items-center gap-2 px-6 py-3 rounded-xl font-semibold bg-blue-600 text-white hover:bg-blue-700 transition shadow"
+                >
+                  <i class="fa-solid fa-rocket"></i>
+                  Create Account
+                </a>
+              </div>
+
+              <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                Already have an account?
+                <a
+                  th:href="@{/login}"
+                  class="text-blue-700 dark:text-blue-300 font-semibold hover:underline"
+                  >Login</a
+                >
+              </div>
+            </div>
+
+            <!-- Right side card -->
+            <div
+              class="bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 text-gray-800 dark:text-gray-100 shadow-lg border border-gray-200 dark:border-gray-700"
+            >
+              <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold">Quick Actions</h2>
+                <i
+                  class="fa-solid fa-bolt text-blue-600 dark:text-blue-400"
+                ></i>
+              </div>
+
+              <div class="mt-6 grid grid-cols-1 gap-4">
+                <!-- View Contacts -->
+                <a
+                  th:href="@{/user/contacts}"
+                  class="group flex items-center justify-between rounded-xl dark:bg-gray-900 bg-white  hover:bg-gray-100 dark:hover:bg-gray-800 transition p-4 border border-gray-200 dark:border-gray-700"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="h-10 w-10 rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center"
+                    >
+                      <i class="fa-solid fa-address-book"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">View Contacts</p>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Browse all saved contacts
+                      </p>
+                    </div>
+                  </div>
+                  <i
+                    class="fa-solid fa-chevron-right text-gray-400 dark:text-gray-500 group-hover:translate-x-1 transition"
+                  ></i>
+                </a>
+
+                <!-- Add Contact -->
+                <a
+                  th:href="@{/user/contacts/add}"
+                  class="group flex items-center justify-between rounded-xl dark:bg-gray-900 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800 transition p-4 border border-gray-200 dark:border-gray-700"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="h-10 w-10 rounded-lg bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400 flex items-center justify-center"
+                    >
+                      <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                      <p class="font-semibold">Add Contact</p>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Create a new entry quickly
+                      </p>
+                    </div>
+                  </div>
+                  <i
+                    class="fa-solid fa-chevron-right text-gray-400 dark:text-gray-500 group-hover:translate-x-1 transition"
+                  ></i>
+                </a>
+              </div>
+
+              <div class="mt-6 text-sm text-gray-500 dark:text-gray-400">
+                Tip: Use tags / groups to keep work & personal contacts
+                separate.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STATS STRIP -->
+        <section class="px-6 sm:px-10 pb-10">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div
+              class="rounded-2xl p-5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 rounded-xl bg-blue-100 dark:bg-blue-950 flex items-center justify-center"
+                >
+                  <i
+                    class="fa-solid fa-lock text-blue-700 dark:text-blue-200"
+                  ></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Secure</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Your data stays protected
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-2xl p-5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 rounded-xl bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center"
+                >
+                  <i
+                    class="fa-solid fa-wand-magic-sparkles text-indigo-700 dark:text-indigo-200"
+                  ></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Simple UI</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Clean and easy workflow
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="rounded-2xl p-5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
+            >
+              <div class="flex items-center gap-3">
+                <div
+                  class="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center"
+                >
+                  <i
+                    class="fa-solid fa-share-nodes text-emerald-700 dark:text-emerald-200"
+                  ></i>
+                </div>
+                <div>
+                  <p class="font-semibold">Share</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Send contacts instantly
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="px-6 sm:px-10 pb-14">
+          <div class="flex items-end justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                Key Features
+              </h2>
+              <p class="mt-1 text-gray-600 dark:text-gray-400">
+                Everything you need to manage contacts better.
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div
+              class="group rounded-2xl p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div
+                class="h-12 w-12 flex items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400"
+              >
+                <i class="fa-solid fa-pen-to-square text-xl"></i>
+              </div>
+
+              <h3
+                class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100"
+              >
+                Add / Edit / Delete
+              </h3>
+
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
+                Manage contacts with a smooth, user-friendly workflow.
+              </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div
+              class="group rounded-2xl p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div
+                class="h-12 w-12 flex items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400"
+              >
+                <i class="fa-solid fa-magnifying-glass text-xl"></i>
+              </div>
+
+              <h3
+                class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100"
+              >
+                Fast Search
+              </h3>
+
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
+                Instantly locate contacts using name, email, phone, or tags.
+              </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div
+              class="group rounded-2xl p-6 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200"
+            >
+              <div
+                class="h-12 w-12 flex items-center justify-center rounded-xl bg-green-100 text-green-600 dark:bg-green-500/20 dark:text-green-400"
+              >
+                <i class="fa-solid fa-share-nodes text-xl"></i>
+              </div>
+
+              <h3
+                class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100"
+              >
+                Easy Sharing
+              </h3>
+
+              <p class="mt-2 text-gray-600 dark:text-gray-400">
+                Share contact details securely with a single click.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer
+          class="border-t border-gray-200 dark:border-gray-800 px-6 sm:px-10 py-5 text-sm text-gray-600 dark:text-gray-400"
+        >
+          <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-2"
+          >
+            <p>&copy; 2026 Smart Contact Manager</p>
+            <div class="flex items-center gap-4">
+              <a th:href="@{/about}" class="hover:underline">About</a>
+              <a th:href="@{/contact}" class="hover:underline">Support</a>
+              <a th:href="@{/privacy}" class="hover:underline">Privacy</a>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

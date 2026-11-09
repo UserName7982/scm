@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${name} + ' Dashboard'">Profile Page</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+
+    <div id="content">
+        <!-- Sidebar -->
+        <div th:if="${user}" class="hidden md:block md:w-1/4">
+            <div th:replace="~{user/sidebar :: sidebar}"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="md:pl-64 flex justify-center">
+            <div class="container mx-auto mt-10 p-4 md:w-3/4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- Sidebar Menu -->
+                    <div class="hidden md:block md:col-span-1 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
+                        <h4 class="text-lg font-semibold mb-4">Menu</h4>
+                        <nav class="space-y-2">
+                            <a th:href="@{'/user/profile'}"
+                                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-400 hover:bg-gray-200">Profile</a>
+                            <a th:href="@{'/user/contacts'}"
+                                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-400 hover:bg-gray-200">Contacts</a>
+                            <a th:href="@{'/user/contacts/add'}"
+                                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-400 hover:bg-gray-200">Add
+                                Contact</a>
+                            <a th:href="@{'/logout'}"
+                                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-400 hover:bg-gray-200">Logout</a>
+                        </nav>
+                    </div>
+
+                    <!-- Dashboard Content -->
+                    <div class="col-span-1 md:col-span-3">
+                        <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                            <h3 class="text-2xl font-semibold mb-4">Welcome, <span th:text="${user.name}">User</span>!
+                            </h3>
+                            <p class="text-gray-600 mb-6">Here's a quick overview of your account.</p>
+
+                            <!-- Statistics Cards -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-blue-500 text-white rounded-lg p-4 shadow-lg">
+                                    <h4 class="font-semibold">Total Contacts</h4>
+                                    <p class="text-3xl" data-th-text="${pageContact}">0</p>
+                                    <p class="text-sm">Manage all your contacts here.</p>
+                                </div>
+                                <div class="bg-green-500 text-white rounded-lg p-4 shadow-lg">
+                                    <h4 class="font-semibold">Verified Email</h4>
+                                    <p class="text-3xl" th:text="${user.emailverified ? 'Yes' : 'No'}">No</p>
+                                    <p class="text-sm">Ensure your email is verified for account security.</p>
+                                </div>
+                                <div class="bg-yellow-500 text-white rounded-lg p-4 shadow-lg">
+                                    <h4 class="font-semibold">Account Status</h4>
+                                    <p class="text-3xl" th:text="${user.enabled ? 'Enabled' : 'Disabled'}">Disabled</p>
+                                    <p class="text-sm">Your account is currently <span
+                                            th:text="${user.enabled ? 'active' : 'inactive'}">inactive</span>.</p>
+                                </div>
+                            </div>
+
+                            <!-- Recent Activity or Notifications -->
+                            <div class="bg-white dark:bg-gray-800 border-t-4 border-blue-500 rounded-lg shadow-lg p-4 mb-6">
+                                <h4 class="text-lg font-semibold mb-4">Recent Activity</h4>
+                                <ul class="divide-y divide-gray-200">
+                                    <li class="py-2" th:each="activity : ${recentActivities}">
+                                        <span th:text="${activity}" class="text-gray-600">User added a new
+                                            contact.</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <!-- Quick Links or Actions -->
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <a th:href="@{'/user/contacts/add'}"
+                                    class="block bg-blue-600 text-white text-center rounded-lg py-2 hover:bg-blue-500 transition duration-300">Add
+                                    New Contact</a>
+                                <a th:href="@{'/user/contacts'}"
+                                    class="block bg-gray-600 text-white text-center rounded-lg py-2 hover:bg-gray-500 transition duration-300">Manage
+                                    Contacts</a>
+                                <a th:href="@{'/user/delete/'+${user.userid}}"
+                                    class="block bg-red-600 text-white text-center rounded-lg py-2 hover:bg-red-500 transition duration-300">Delete
+                                    Account</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tailwind JS (for future JS functionality) -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.9.1/dist/cdn.min.js" defer></script>
+</body>
+
+</html>

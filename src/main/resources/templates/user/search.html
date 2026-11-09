@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <title>Search</title>
+</head>
+
+<body>
+    <div id="content">
+        <div th:if="${user}">
+            <div th:replace="~{user/sidebar::sidebar}"></div>
+        </div>
+        <div class="md:pl-64">
+            <h1 class="text-center text-5xl">Welcome to robin page</h1>
+            <p class="text-center text-2xl" data-th-text="${pageContact.totalElements+'Result Found'}">robin</p>
+            <div class="mt-3 table_Container dark:bg-gray-800">
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <form th:object="${contactsearchform}" th:action="@{/user/contacts/search}">
+                        <div
+                            class="flex space-x-3 items-center flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
+                            <div>
+                                <select th:field="*{field}" name="field" id="countries"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option selected value="">Select Field</option>
+                                    <option value="name">Name</option>
+                                    <option value="phone">Phone</option>
+                                    <option value="email">Email</option>
+                                </select>
+                            </div>
+                            <label for="table-search" class="sr-only">Search</label>
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="table-search-users"
+                                    class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search for users" th:field="*{keyword}" name="keyword">
+                            </div>
+                            <div class="button_container">
+                                <button type="submit" class="px-3 py-2 rounded bg-gray-500">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Name</th>
+                                <th scope="col" class="px-6 py-3">Phone Number</th>
+                                <th scope="col" class="px-6 py-3">Favorite</th>
+                                <th scope="col" class="px-6 py-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${pageContact.getContent()}" th:object="${c}"
+                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <th scope="row"
+                                    class="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                    <img onerror="this.src='https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png'"
+                                        class="w-10 h-10 rounded-full" th:src="*{picture}" alt="">
+                                    <div class="ps-3">
+                                        <div class="text-base font-semibold" th:text="*{name}">Neil Sims</div>
+                                        <div class="font-normal text-gray-500" th:text="*{email}">neil.sims@flowbite.com
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="px-6 py-4">
+                                    <i class="fa-solid fa-phone"></i>
+                                    <span th:text="*{phoneno}"></span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i th:if="*{favourite}" class="fa-regular fa-star"> favorite</i>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <a href="#"><i class="fa-solid w-6 h-5 fa-trash"></i></a>
+                                    <a href="#"><i class="fa-solid w-6 h-5 fa-pen"></i></a>
+                                    <button th:onclick="loaddata([[${c.id}]])"><i class="fa-regular w-6 h-5 fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center pt-2">
+                        <nav aria-label="Page navigation example">
+                            <ul class="inline-flex -space-x-px text-base h-10">
+                                <li th:unless="${pageContact.first}">
+                                    <a th:href="@{'/user/contacts/search?pagesize=10&page=' + ${pageContact.number-1} + '&field=' + ${contactsearchform.field} + '&keyword=' + ${contactsearchform.keyword}}"
+                                        class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
+                                </li>
+                                <li th:each="index : ${#numbers.sequence(0, pageContact.totalPages-1)}">
+                                    <a th:href="@{'/user/contacts/search?pagesize=10&page=' + ${index} + '&field=' + ${contactsearchform.field} + '&keyword=' + ${contactsearchform.keyword}}"
+                                        th:classappend="${index == pageContact.number ? 'bg-blue-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}"
+                                        aria-current="page"
+                                        class="flex items-center justify-center px-4 h-10 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">
+                                        <span th:text="${index+1}"></span>
+                                    </a>
+                                </li>
+                                <li th:unless="${pageContact.last}">
+                                    <a th:href="@{'/user/contacts/search?pagesize=10&page=' + ${pageContact.number+1} + '&field=' + ${contactsearchform.field} + '&keyword=' + ${contactsearchform.keyword}}"
+                                        class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

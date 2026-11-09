@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+<head>
+  <title>Services - Smart Contact Manager</title>
+</head>
+
+<body>
+<div id="content">
+
+<section class="px-6 py-10 max-w-6xl mx-auto">
+
+  <!-- HERO -->
+  <div class="text-center">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100">
+      Our Services
+    </h1>
+    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      Powerful tools designed to help you manage, organize, and connect with your contacts efficiently.
+    </p>
+  </div>
+
+  <!-- SERVICES GRID -->
+  <div class="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <!-- Service 1 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-blue-100 text-blue-600
+                  dark:bg-blue-500/20 dark:text-blue-400">
+        <i class="fa-solid fa-address-book"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Contact Management
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Add, edit, delete, and organize all your contacts in one place with ease.
+      </p>
+    </div>
+
+    <!-- Service 2 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-purple-100 text-purple-600
+                  dark:bg-purple-500/20 dark:text-purple-400">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Advanced Search
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Instantly find contacts using filters like name, email, phone, or tags.
+      </p>
+    </div>
+
+    <!-- Service 3 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-green-100 text-green-600
+                  dark:bg-green-500/20 dark:text-green-400">
+        <i class="fa-solid fa-image"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Profile Management
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Upload profile images and detailed info for better identification.
+      </p>
+    </div>
+
+    <!-- Service 4 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-yellow-100 text-yellow-600
+                  dark:bg-yellow-500/20 dark:text-yellow-400">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Secure Storage
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Your data is stored securely with strong protection and privacy controls.
+      </p>
+    </div>
+
+    <!-- Service 5 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-pink-100 text-pink-600
+                  dark:bg-pink-500/20 dark:text-pink-400">
+        <i class="fa-solid fa-mobile-screen"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Multi-Device Access
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Access your contacts anytime from desktop, tablet, or mobile devices.
+      </p>
+    </div>
+
+    <!-- Service 6 -->
+    <div class="group p-6 rounded-2xl 
+                bg-white dark:bg-gray-900 
+                border border-gray-200 dark:border-gray-700 
+                shadow-sm hover:shadow-md transition">
+      <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                  bg-indigo-100 text-indigo-600
+                  dark:bg-indigo-500/20 dark:text-indigo-400">
+        <i class="fa-solid fa-share-nodes"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
+        Contact Sharing
+      </h3>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">
+        Share contact details quickly and securely with others.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="mt-14 text-center 
+              p-8 rounded-2xl 
+              bg-blue-600 text-white 
+              dark:bg-blue-500">
+    <h2 class="text-2xl font-bold">
+      Start Managing Contacts Smarter
+    </h2>
+    <p class="mt-2 text-white/90">
+      Experience a faster and more organized way to handle your contacts.
+    </p>
+    <a href="/user/contacts"
+       class="inline-block mt-4 px-6 py-3 rounded-xl 
+              bg-white text-blue-600 font-semibold 
+              hover:bg-gray-100 transition">
+      Get Started
+    </a>
+  </div>
+
+</section>
+
+<script>
+  $(document).ready(() => {
+    $(".item").removeClass("active1");
+    $("#service").addClass("active1");
+  });
+</script>
+
+</div>
+</body>
+</html>

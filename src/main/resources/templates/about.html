@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+<head>
+  <title>About - Smart Contact Manager</title>
+</head>
+
+<body>
+<div id="content">
+
+<section class="px-6 py-10 max-w-6xl mx-auto">
+
+  <!-- HERO / INTRO -->
+  <div class="text-center">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100">
+      About Smart Contact Manager
+    </h1>
+    <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+      Smart Contact Manager helps you organize, search, and manage your contacts effortlessly. 
+      Built for simplicity, speed, and productivity.
+    </p>
+  </div>
+
+  <!-- MISSION -->
+  <div class="mt-10 rounded-2xl p-6 
+              bg-white dark:bg-gray-900 
+              border border-gray-200 dark:border-gray-700 shadow-sm">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-gray-100">
+      Our Mission
+    </h2>
+    <p class="mt-3 text-gray-600 dark:text-gray-400">
+      Our mission is to simplify the way you manage your contacts. 
+      Spend less time searching and more time building meaningful relationships. 
+      Whether personal or professional, your contacts stay organized and accessible.
+    </p>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+      Key Features
+    </h2>
+
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Feature -->
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-blue-100 text-blue-600
+                    dark:bg-blue-500/20 dark:text-blue-400">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Organized Contacts
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Store and categorize contacts in a structured way.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-purple-100 text-purple-600
+                    dark:bg-purple-500/20 dark:text-purple-400">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Fast Search
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Quickly find contacts using smart filters.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-green-100 text-green-600
+                    dark:bg-green-500/20 dark:text-green-400">
+          <i class="fa-solid fa-image"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Profile Images
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Attach images for easy visual identification.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-yellow-100 text-yellow-600
+                    dark:bg-yellow-500/20 dark:text-yellow-400">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Secure Data
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Your data is محفوظ and protected with strong security.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-pink-100 text-pink-600
+                    dark:bg-pink-500/20 dark:text-pink-400">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Responsive Design
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Works seamlessly on mobile, tablet, and desktop.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-white dark:bg-gray-900 
+                  border border-gray-200 dark:border-gray-700 shadow-sm">
+        <div class="h-12 w-12 flex items-center justify-center rounded-xl
+                    bg-indigo-100 text-indigo-600
+                    dark:bg-indigo-500/20 dark:text-indigo-400">
+          <i class="fa-solid fa-share-nodes"></i>
+        </div>
+        <h3 class="mt-4 font-semibold text-lg text-gray-900 dark:text-gray-100">
+          Easy Sharing
+        </h3>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Share contacts quickly with others.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</section>
+
+<script>
+  $(document).ready(() => {
+    $(".item").removeClass("active1");
+    $("#about2").addClass("active1");
+  });
+</script>
+
+</div>
+</body>
+</html>
