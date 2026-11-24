@@ -29,5 +29,17 @@ public interface contactservice {
 
     
     Page<Contact> getByuser(User user,int page,int pagesize,String sortby, String direction);
-    
+
+    Contact toggleFavourite(String id);
+
+    Page<Contact> getFavourites(User user, int page, int pagesize, String sortby, String direction);
+
+    long countByUser(User user);
+
+    long countFavourites(User user);
+
+    List<Contact> getAllForUser(User user);
+
+    boolean isDuplicate(User user, String email, String phoneno);
+
 }

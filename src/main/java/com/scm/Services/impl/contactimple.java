@@ -103,4 +103,40 @@ public class contactimple implements contactservice {
         return databaseconnectivity.findByUserAndPhonenoContainingIgnoreCase(user, phoneno,
                 buildPageable(page, size, sortby, direction));
     }
+
+    @Override
+    public Contact toggleFavourite(String id) {
+        Contact contact = getbyid(id);
+        contact.setFavourite(!contact.isFavourite());
+        return databaseconnectivity.save(contact);
+    }
+
+    @Override
+    public Page<Contact> getFavourites(User user, int page, int pagesize, String sortby, String direction) {
+        return databaseconnectivity.findByUserAndFavouriteTrue(user, buildPageable(page, pagesize, sortby, direction));
+    }
+
+    @Override
+    public long countByUser(User user) {
+        return databaseconnectivity.countByUser(user);
+    }
+
+    @Override
+    public long countFavourites(User user) {
+        return databaseconnectivity.countByUserAndFavouriteTrue(user);
+    }
+
+    @Override
+    public List<Contact> getAllForUser(User user) {
+        return databaseconnectivity.findByUserOrderByNameAsc(user);
+    }
+
+    @Override
+    public boolean isDuplicate(User user, String email, String phoneno) {
+        boolean emailDup = email != null && !email.isBlank()
+                && databaseconnectivity.existsByUserAndEmailIgnoreCase(user, email.trim());
+        boolean phoneDup = phoneno != null && !phoneno.isBlank()
+                && databaseconnectivity.existsByUserAndPhoneno(user, phoneno.trim());
+        return emailDup || phoneDup;
+    }
 }

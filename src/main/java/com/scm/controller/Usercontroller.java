@@ -1,6 +1,5 @@
 package com.scm.controller;
 
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.scm.Services.contactservice;
 import com.scm.Services.services;
-import com.scm.entity.Contact;
 import com.scm.entity.User;
 import com.scm.helper.Helper;
 import com.scm.helper.ResourcesNotFound;
@@ -37,8 +35,9 @@ public class Usercontroller {
         User user = uServices.getUserByEmailsUser(username);
 
        
-        List<Contact> contact =  contactservice.getbyUserid(user.getUserid());
-        model.addAttribute("pageContact", contact.size());
+        model.addAttribute("totalContacts", contactservice.countByUser(user));
+        model.addAttribute("favouriteCount", contactservice.countFavourites(user));
+        model.addAttribute("favouriteContacts", contactservice.getFavourites(user, 0, 5, "name", "asc").getContent());
 
         return "user/dashboard";
     }
