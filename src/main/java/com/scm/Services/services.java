@@ -14,4 +14,7 @@ public interface services {
     boolean isUserExistByEmail(String email);
     List <User> getAllUsers();
     User getUserByEmailsUser(String username);
+    User updateProfile(String userid, String name, String phoneno, String about, String pictureUrl, String picturePublicId);
+    boolean passwordMatches(User user, String rawPassword);
+    void changePassword(String userid, String newPassword);
 }

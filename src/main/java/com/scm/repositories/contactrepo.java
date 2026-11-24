@@ -26,5 +26,16 @@ public interface contactrepo extends JpaRepository<Contact, String> {
 
     Page<Contact> findByUserAndPhonenoContainingIgnoreCase(User user,String phoneno,Pageable pageable);
 
+    Page<Contact> findByUserAndFavouriteTrue(User user, Pageable pageable);
+
+    long countByUser(User user);
+
+    long countByUserAndFavouriteTrue(User user);
+
+    List<Contact> findByUserOrderByNameAsc(User user);
+
+    boolean existsByUserAndEmailIgnoreCase(User user, String email);
+
+    boolean existsByUserAndPhoneno(User user, String phoneno);
 
 }

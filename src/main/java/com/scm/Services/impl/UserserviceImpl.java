@@ -91,6 +91,29 @@ public class UserserviceImpl implements services{
        return databaseconnectivity.findByEmail(username).orElseThrow(() -> new ResourcesNotFound("user not found"));
     }
 
-  
+    @Override
+    public User updateProfile(String userid, String name, String phoneno, String about, String pictureUrl, String picturePublicId) {
+        User user = databaseconnectivity.findById(userid).orElseThrow(() -> new ResourcesNotFound("user not found"));
+        user.setName(name);
+        user.setPhoneno(phoneno);
+        user.setAbout(about);
+        if (pictureUrl != null) {            // null means "keep the current picture"
+            user.setProfilepic(pictureUrl);
+            user.setProfilepicpublicid(picturePublicId);
+        }
+        return databaseconnectivity.save(user);
+    }
+
+    @Override
+    public boolean passwordMatches(User user, String rawPassword) {
+        return rawPassword != null && user.getPassword() != null && passwordEncoder.matches(rawPassword, user.getPassword());
+    }
+
+    @Override
+    public void changePassword(String userid, String newPassword) {
+        User user = databaseconnectivity.findById(userid).orElseThrow(() -> new ResourcesNotFound("user not found"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        databaseconnectivity.save(user);
+    }
 
 }

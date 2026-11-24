@@ -24,6 +24,13 @@ public class FileValidator implements ConstraintValidator<validfile,MultipartFil
             return false;
         }
 
+        String type = file.getContentType();
+        if(type==null || !type.toLowerCase().startsWith("image/")){
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate("Only image files are allowed").addConstraintViolation();
+            return false;
+        }
+
         return true;
         
     }

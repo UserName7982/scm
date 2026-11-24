@@ -44,6 +44,7 @@ public class User implements UserDetails {
     private String about;
     @Column(length = 1000)
     private String profilepic;
+    private String profilepicpublicid;
     private boolean enabled=false;
     private String emailverified;
     private String phoneno;
