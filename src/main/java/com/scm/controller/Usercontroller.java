@@ -16,6 +16,7 @@ import com.scm.Services.services;
 import com.scm.entity.Contact;
 import com.scm.entity.User;
 import com.scm.helper.Helper;
+import com.scm.helper.ResourcesNotFound;
 
 @Controller
 @RequestMapping("/user")
@@ -48,7 +49,11 @@ public class Usercontroller {
         return "user/profile";
     }
     @RequestMapping("/delete/{userid}")
-        public String delete(@PathVariable("userid") String id){
+        public String delete(@PathVariable("userid") String id, Authentication authentication){
+            User current = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
+            if (!current.getUserid().equals(id)) {
+                throw new ResourcesNotFound("User not found");
+            }
             uServices.deleteUser(id);
             return "redirect:/logout";
         }

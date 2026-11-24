@@ -29,7 +29,6 @@ public class rootcontroller {
         logger.info("User logged in: {}", name);
 
         User user = userService.getUserByEmailsUser(name);  // Using the injected service
-        System.out.println(user.getName());
         model.addAttribute("email", name);
         model.addAttribute("user", user);
         model.addAttribute("name", user.getName());

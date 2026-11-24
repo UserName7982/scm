@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <title>Import Contacts</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div id="content" class="min-h-screen flex flex-col items-center">
+        <div th:if="${user}" class="w-full">
+            <div data-th-replace="~{user/sidebar::sidebar}"></div>
+        </div>
+        <div class="md:pl-64 w-full max-w-3xl p-4">
+            <h1 class="text-center text-4xl font-bold mb-6 text-gray-700 dark:text-gray-200">Import Contacts</h1>
+            <div data-th-replace="message::messagebox"></div>
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                <form data-th-action="@{'/user/contacts/import'}" method="post" enctype="multipart/form-data">
+                    <label for="file" class="block mb-2 text-sm font-medium">Choose a CSV file (max 1 MB, 500 rows)</label>
+                    <input type="file" id="file" name="file" accept=".csv,text/csv" required
+                        class="block w-full mb-4 text-sm border border-gray-300 rounded-lg cursor-pointer dark:bg-gray-700 dark:border-gray-600">
+                    <button type="submit"
+                        class="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition">Import</button>
+                    <a data-th-href="@{'/user/contacts'}" class="ml-3 text-gray-600 dark:text-gray-300">Cancel</a>
+                </form>
+
+                <div class="mt-6 text-sm text-gray-600 dark:text-gray-300">
+                    <p class="font-semibold mb-1">Expected columns (first row must be the header):</p>
+                    <pre class="bg-gray-100 dark:bg-gray-700 rounded p-3 overflow-x-auto">name,email,phone,address,description,favourite
+Asha Verma,asha@example.com,9876543210,Delhi,College friend,true</pre>
+                    <ul class="list-disc ml-5 mt-3 space-y-1">
+                        <li><b>name, email, phone</b> are required. Phone must be exactly 10 digits.</li>
+                        <li>Rows that duplicate an existing email or phone are skipped.</li>
+                        <li>Tip: use <a class="text-blue-600 underline" data-th-href="@{'/user/contacts/export'}">Export CSV</a>
+                            to get a file in the right format.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

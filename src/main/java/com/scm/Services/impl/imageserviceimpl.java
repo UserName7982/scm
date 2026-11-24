@@ -26,8 +26,7 @@ public class imageserviceimpl implements imageservice {
     public String uploadimage(MultipartFile picture,String filename) {
         
         try {
-            byte[] data=new byte[picture.getInputStream().available()];
-            picture.getInputStream().read(data);
+            byte[] data=picture.getBytes();
             cloudinary.uploader().upload(data, ObjectUtils.asMap(
                 "public_id",filename
             ));
@@ -49,6 +48,19 @@ public class imageserviceimpl implements imageservice {
         .height(appconstant.picture_height)
         .crop(appconstant.picture_crop))
         .generate(publicid);
+    }
+
+
+    @Override
+    public void deleteimage(String publicid) {
+        if (publicid == null || publicid.isBlank()) {
+            return;
+        }
+        try {
+            cloudinary.uploader().destroy(publicid, ObjectUtils.emptyMap());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

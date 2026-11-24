@@ -45,15 +45,20 @@
                             <p class="text-gray-600 mb-6">Here's a quick overview of your account.</p>
 
                             <!-- Statistics Cards -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                                 <div class="bg-blue-500 text-white rounded-lg p-4 shadow-lg">
                                     <h4 class="font-semibold">Total Contacts</h4>
-                                    <p class="text-3xl" data-th-text="${pageContact}">0</p>
+                                    <p class="text-3xl" data-th-text="${totalContacts}">0</p>
                                     <p class="text-sm">Manage all your contacts here.</p>
+                                </div>
+                                <div class="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
+                                    <h4 class="font-semibold">Favourite Contacts</h4>
+                                    <p class="text-3xl" data-th-text="${favouriteCount}">0</p>
+                                    <p class="text-sm">Contacts you starred for quick access.</p>
                                 </div>
                                 <div class="bg-green-500 text-white rounded-lg p-4 shadow-lg">
                                     <h4 class="font-semibold">Verified Email</h4>
-                                    <p class="text-3xl" th:text="${user.emailverified ? 'Yes' : 'No'}">No</p>
+                                    <p class="text-3xl" th:text="${user.emailverified == 'true' ? 'Yes' : 'No'}">No</p>
                                     <p class="text-sm">Ensure your email is verified for account security.</p>
                                 </div>
                                 <div class="bg-yellow-500 text-white rounded-lg p-4 shadow-lg">
@@ -64,28 +69,41 @@
                                 </div>
                             </div>
 
-                            <!-- Recent Activity or Notifications -->
-                            <div class="bg-white dark:bg-gray-800 border-t-4 border-blue-500 rounded-lg shadow-lg p-4 mb-6">
-                                <h4 class="text-lg font-semibold mb-4">Recent Activity</h4>
-                                <ul class="divide-y divide-gray-200">
-                                    <li class="py-2" th:each="activity : ${recentActivities}">
-                                        <span th:text="${activity}" class="text-gray-600">User added a new
-                                            contact.</span>
+                            <!-- Favourite contacts -->
+                            <div class="bg-white dark:bg-gray-800 border-t-4 border-pink-500 rounded-lg shadow-lg p-4 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="text-lg font-semibold">Favourite Contacts</h4>
+                                    <a th:href="@{'/user/contacts/favourites'}" class="text-sm text-blue-600 hover:underline">View all</a>
+                                </div>
+                                <p class="text-gray-500 text-sm" th:if="${#lists.isEmpty(favouriteContacts)}">
+                                    No favourites yet. Star a contact from the contacts page to see it here.</p>
+                                <ul class="divide-y divide-gray-200" th:unless="${#lists.isEmpty(favouriteContacts)}">
+                                    <li class="py-2 flex items-center" th:each="fc : ${favouriteContacts}">
+                                        <img onerror="this.src='https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png'"
+                                            class="w-9 h-9 rounded-full mr-3" th:src="${fc.picture}" alt="">
+                                        <div>
+                                            <div class="font-semibold" th:text="${fc.name}">Name</div>
+                                            <div class="text-sm text-gray-500" th:text="${fc.phoneno}">Phone</div>
+                                        </div>
                                     </li>
                                 </ul>
                             </div>
 
                             <!-- Quick Links or Actions -->
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                 <a th:href="@{'/user/contacts/add'}"
-                                    class="block bg-blue-600 text-white text-center rounded-lg py-2 hover:bg-blue-500 transition duration-300">Add
-                                    New Contact</a>
+                                    class="block bg-blue-600 text-white text-center rounded-lg py-2 hover:bg-blue-500 transition duration-300">Add Contact</a>
                                 <a th:href="@{'/user/contacts'}"
-                                    class="block bg-gray-600 text-white text-center rounded-lg py-2 hover:bg-gray-500 transition duration-300">Manage
-                                    Contacts</a>
+                                    class="block bg-gray-600 text-white text-center rounded-lg py-2 hover:bg-gray-500 transition duration-300">Manage Contacts</a>
+                                <a th:href="@{'/user/contacts/favourites'}"
+                                    class="block bg-pink-600 text-white text-center rounded-lg py-2 hover:bg-pink-500 transition duration-300">Favourites</a>
+                                <a th:href="@{'/user/contacts/import'}"
+                                    class="block bg-green-600 text-white text-center rounded-lg py-2 hover:bg-green-500 transition duration-300">Import CSV</a>
+                                <a th:href="@{'/user/contacts/export'}"
+                                    class="block bg-indigo-600 text-white text-center rounded-lg py-2 hover:bg-indigo-500 transition duration-300">Export CSV</a>
                                 <a th:href="@{'/user/delete/'+${user.userid}}"
-                                    class="block bg-red-600 text-white text-center rounded-lg py-2 hover:bg-red-500 transition duration-300">Delete
-                                    Account</a>
+                                    onclick="return confirm('Delete your account and ALL your contacts permanently? This cannot be undone.')"
+                                    class="block bg-red-600 text-white text-center rounded-lg py-2 hover:bg-red-500 transition duration-300">Delete Account</a>
                             </div>
                         </div>
                     </div>

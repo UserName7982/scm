@@ -1,5 +1,5 @@
 console.log("contact.js");
-const base="http://scm2o.eu-north-1.elasticbeanstalk.com";
+const base = ""; // same origin as the page (works locally and on any deployment)
 const contactModal = document.getElementById('view_contact_modal');
 const options = {
     placement: 'bottom-right',
@@ -36,19 +36,16 @@ async function loaddata(id) {
     try {
         const data = await (await fetch(`${base}/api/contacts/${id}`)).json();
         console.log(data);
-        document.querySelector("#contact_name").innerHTML = data.name;
-        document.querySelector("#contact_phone").innerHTML=data.phoneno;
-        document.querySelector("#contact_image").src = data.picture;
-        document.querySelector("#contact_address").innerHTML=data.address;
-        document.querySelector("#contact_description").innerHTML = data.discreption;
-        if(data.favourite){
-            document.querySelector("#contact_rating").innerHTML="favorite";
-        }else{
-            document.querySelector("#contact_rating").innerHTML="";
-        }
-        
-        // Ensure this selector points to a valid element
-        document.querySelector("#contact_email").innerHTML = data.email;
+        // textContent (not innerHTML) so contact data can never inject HTML/JS
+        const setText = (sel, val) => { document.querySelector(sel).textContent = val || ""; };
+        setText("#contact_name", data.name);
+        setText("#contact_phone", data.phoneno);
+        setText("#contact_address", data.address);
+        setText("#contact_description", data.discreption);
+        setText("#contact_email", data.email);
+        setText("#contact_rating", data.favourite ? "favorite" : "");
+        document.querySelector("#contact_image").src = data.picture ||
+            "https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png";
 
         opencontactmodal();
     } catch (error) {

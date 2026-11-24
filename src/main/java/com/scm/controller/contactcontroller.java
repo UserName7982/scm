@@ -25,6 +25,7 @@ import com.scm.entity.User;
 import com.scm.helper.Helper;
 import com.scm.helper.Message;
 import com.scm.helper.MessageType;
+import com.scm.helper.ResourcesNotFound;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -43,6 +44,16 @@ public class contactcontroller {
 
     @Autowired
     private services uServices;
+
+    /** Loads a contact only if it belongs to the logged-in user, otherwise 404. */
+    private Contact ownedContact(String id, Authentication authentication) {
+        User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
+        Contact contact = contactservice.getbyid(id);
+        if (contact.getUser() == null || !contact.getUser().getUserid().equals(user.getUserid())) {
+            throw new ResourcesNotFound("Contact not found");
+        }
+        return contact;
+    }
 
     @RequestMapping("/add")
     public String addcontact(Model model) {
@@ -107,7 +118,7 @@ public class contactcontroller {
     public String Search(
             @ModelAttribute contactsearchform contactsearchform,
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "pagesize", defaultValue = "10") int size,
             @RequestParam(value = "sortby", defaultValue = "name") String sortby,
             @RequestParam(value = "direction", defaultValue = "asc") String direction,
             Model model, Authentication authentication) {
@@ -115,17 +126,18 @@ public class contactcontroller {
         logger.info("field {} keyword {}", contactsearchform.getField(), contactsearchform.getKeyword());
 
         User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
-        Page<Contact> pageContact = null;
+        String field = contactsearchform.getField() == null ? "name" : contactsearchform.getField();
+        String keyword = contactsearchform.getKeyword() == null ? "" : contactsearchform.getKeyword().trim();
+        contactsearchform.setField(field);
+        contactsearchform.setKeyword(keyword);
 
-        if (contactsearchform.getField().equals("email")) {
-            pageContact = contactservice.searchByEmail(contactsearchform.getKeyword(), page, size, sortby, direction,
-                    user);
-        } else if (contactsearchform.getField().equals("name")) {
-            pageContact = contactservice.searchByName(contactsearchform.getKeyword(), page, size, sortby, direction,
-                    user);
-        } else if (contactsearchform.getField().equals("phone")) {
-            pageContact = contactservice.searchByPhoneno(contactsearchform.getKeyword(), page, size, sortby, direction,
-                    user);
+        Page<Contact> pageContact;
+        if (field.equals("email")) {
+            pageContact = contactservice.searchByEmail(keyword, page, size, sortby, direction, user);
+        } else if (field.equals("phone")) {
+            pageContact = contactservice.searchByPhoneno(keyword, page, size, sortby, direction, user);
+        } else {
+            pageContact = contactservice.searchByName(keyword, page, size, sortby, direction, user);
         }
 
         model.addAttribute("contactsearchform", contactsearchform);
@@ -135,7 +147,9 @@ public class contactcontroller {
     }
 
     @RequestMapping("/delete/{contactid}")
-    public String delete(@PathVariable("contactid") String id) {
+    public String delete(@PathVariable("contactid") String id, Authentication authentication) {
+        Contact owned = ownedContact(id, authentication);
+        imageservice.deleteimage(owned.getContactimagepublicid());
         contactservice.delete(id);
         logger.info("contactid {} deleted", id);
         return "redirect:/user/contacts";
@@ -143,8 +157,8 @@ public class contactcontroller {
 
     @RequestMapping("/view/{contactid}")
     public String view(@PathVariable("contactid") String id,
-            Model model) {
-        var contact = contactservice.getbyid(id);
+            Model model, Authentication authentication) {
+        var contact = ownedContact(id, authentication);
         contactform contacts = new contactform();
         contacts.setName(contact.getName());
         contacts.setAddress(contact.getAddress());
@@ -161,15 +175,17 @@ public class contactcontroller {
     @RequestMapping(value = "/update/{contactid}",method = RequestMethod.POST)
     public String update(@PathVariable("contactid") String id,
            @Valid @ModelAttribute contactform update,BindingResult bindingResult,
-            Model model) {
+            Model model, HttpSession session, Authentication authentication) {
+
+                Contact contact = ownedContact(id, authentication);
 
                 if(bindingResult.hasErrors()){
+                    model.addAttribute("contactid", id);
                     return "user/update_contact_view";
                 }
                 
 
                 
-        Contact contact = contactservice.getbyid(id);
         contact.setId(id);
         contact.setName(update.getName());
         contact.setEmail(update.getEmail());
@@ -180,15 +196,17 @@ public class contactcontroller {
         // contact.setPicture(update.getContactimg());
         // contactform contactss = new contactform();
         if (update.getPicture() != null && !update.getPicture().isEmpty()) {
+            String oldImageId = contact.getContactimagepublicid();
             String filename = UUID.randomUUID().toString();
             String fileurl = imageservice.uploadimage(update.getPicture(), filename);
+            imageservice.deleteimage(oldImageId);
             contact.setContactimagepublicid(filename);
             contact.setPicture(fileurl);
             update.setContactimg(fileurl);
         }
         logger.info(update.getContactimg());
         contactservice.update(contact);
-        model.addAttribute("message",
+        session.setAttribute("message",
                 Message.builder().content("Updated Successfully!!").messageType(MessageType.green).build());
         return "redirect:/user/contacts/view/"+id;
     }

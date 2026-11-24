@@ -13,8 +13,15 @@
             <div data-th-replace="~{user/sidebar::sidebar}"></div>
         </div>
         <div class="md:pl-64 w-full max-w-7xl p-4">
-            <h1 class="text-center text-4xl font-bold mb-6 text-gray-700 dark:text-gray-200">Manage Your Contacts</h1>
+            <h1 class="text-center text-4xl font-bold mb-6 text-gray-700 dark:text-gray-200" data-th-text="${pageTitle}">Manage Your Contacts</h1>
+            <div data-th-replace="message::messagebox"></div>
             <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                <div class="mb-4 flex flex-wrap gap-2">
+                    <a data-th-href="@{'/user/contacts'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-address-book"></i> All</a>
+                    <a data-th-href="@{'/user/contacts/favourites'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-star text-yellow-500"></i> Favourites</a>
+                    <a data-th-href="@{'/user/contacts/import'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-file-import"></i> Import CSV</a>
+                    <a data-th-href="@{'/user/contacts/export'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-file-export"></i> Export CSV</a>
+                </div>
                 <form data-th-action="@{'/user/contacts/search'}" class="mb-4 flex flex-col md:flex-row gap-4">
                     <div class="flex-grow">
                         <select name="field" id="field"
@@ -67,8 +74,12 @@
                                     <span data-th-text="*{phoneno}"></span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div data-th-if="*{favourite}"><i class="fa-regular fa-star text-yellow-500"></i>
-                                        Favorite</div>
+                                    <form data-th-action="@{'/user/contacts/favourite/' + *{id}}" method="post">
+                                        <input type="hidden" name="from" data-th-value="${favouritesView} ? 'favourites' : 'contacts'">
+                                        <button type="submit" title="Toggle favourite">
+                                            <i class="fa-star text-lg" data-th-classappend="*{favourite} ? 'fa-solid text-yellow-500' : 'fa-regular text-gray-400'"></i>
+                                        </button>
+                                    </form>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-3">
@@ -87,21 +98,24 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center pt-4">
-                    <nav aria-label="Page navigation example">
+                <div class="text-center py-6 text-gray-500" data-th-if="${pageContact.totalElements == 0}">
+                    <p data-th-text="${favouritesView} ? 'No favourite contacts yet. Click the star next to a contact to add one.' : 'No contacts yet.'">No contacts yet.</p>
+                </div>
+                <div class="text-center pt-4" data-th-if="${pageContact.totalPages > 0}">
+                    <nav aria-label="Page navigation">
                         <ul class="inline-flex items-center -space-x-px">
                             <li data-th-unless="${pageContact.first}">
-                                <a data-th-href="@{'/user/contacts?pagesize=10&page=' + ${pageContact.number-1}}"
+                                <a data-th-href="@{${basePath}(pagesize=10,page=${pageContact.number-1})}"
                                     class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Previous</a>
                             </li>
                             <li data-th-each="index: ${#numbers.sequence(0,pageContact.totalPages-1)}">
-                                <a data-th-href="@{'/user/contacts?pagesize=10&page=' + ${index}}"
+                                <a data-th-href="@{${basePath}(pagesize=10,page=${index})}"
                                     th:classappend="${index == pageContact.number ? 'bg-blue-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}"
                                     class="px-3 py-2 leading-tight text-gray-500 border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:hover:bg-gray-700 dark:hover:text-white"><span
                                         data-th-text="${index+1}"></span></a>
                             </li>
                             <li data-th-unless="${pageContact.last}">
-                                <a data-th-href="@{'/user/contacts?pagesize=10&page=' + ${pageContact.number+1}}"
+                                <a data-th-href="@{${basePath}(pagesize=10,page=${pageContact.number+1})}"
                                     class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
                             </li>
                         </ul>

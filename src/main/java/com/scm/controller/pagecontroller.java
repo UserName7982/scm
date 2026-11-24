@@ -60,7 +60,9 @@ public class pagecontroller {
     
     @RequestMapping("/do_register")
     public String processregister(@Valid @ModelAttribute userform user,BindingResult rBindingResult,HttpSession session){
-        System.out.println(user);
+        if (!rBindingResult.hasErrors() && userServices.isUserExistByEmail(user.getEmail())) {
+            rBindingResult.rejectValue("email", "duplicate", "This email is already registered");
+        }
         if (rBindingResult.hasErrors()) {
             return "register";
         }else{

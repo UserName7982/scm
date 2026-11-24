@@ -88,7 +88,7 @@ public class UserserviceImpl implements services{
 
     @Override
     public User getUserByEmailsUser(String username) {
-       return databaseconnectivity.findByEmail(username).orElseThrow(null);
+       return databaseconnectivity.findByEmail(username).orElseThrow(() -> new ResourcesNotFound("user not found"));
     }
 
   

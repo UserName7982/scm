@@ -8,4 +8,6 @@ public interface imageservice {
 
   String getUrlfrompublicid(String publicid);
 
+  void deleteimage(String publicid);
+
 }

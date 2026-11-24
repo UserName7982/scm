@@ -36,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(autherize -> {
-            autherize.requestMatchers("/user/**").authenticated();
+            autherize.requestMatchers("/user/**", "/api/**").authenticated();
             autherize.anyRequest().permitAll();
         });
         httpSecurity.formLogin(formLogin -> {
