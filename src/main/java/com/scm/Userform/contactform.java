@@ -7,6 +7,7 @@ import com.scm.validator.validfile;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,4 +36,7 @@ public class contactform {
     private String contactimg;
     private String discreption;
     private boolean favourite=false;
+    private String groupId;
+    @Size(max = 300, message = "Tags are too long")
+    private String tags;
 }

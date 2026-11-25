@@ -2,6 +2,7 @@ package com.scm.Services.impl;
 
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.scm.Services.contactservice;
 import com.scm.entity.Contact;
+import com.scm.entity.ContactGroup;
 import com.scm.entity.User;
 import com.scm.helper.ResourcesNotFound;
 import com.scm.repositories.contactrepo;
@@ -54,6 +56,11 @@ public class contactimple implements contactservice {
         contactold.setPicture(contact.getPicture());
         contactold.setDiscreption(contact.getDiscreption());
         contactold.setContactimagepublicid(contact.getContactimagepublicid());
+        contactold.setContactGroup(contact.getContactGroup());
+        // copy first: contact and contactold can be the same managed object
+        Set<String> newTags = new TreeSet<>(contact.getTags());
+        contactold.getTags().clear();
+        contactold.getTags().addAll(newTags);
 
         return databaseconnectivity.save(contactold);
     }
@@ -138,5 +145,21 @@ public class contactimple implements contactservice {
         boolean phoneDup = phoneno != null && !phoneno.isBlank()
                 && databaseconnectivity.existsByUserAndPhoneno(user, phoneno.trim());
         return emailDup || phoneDup;
+    }
+
+    @Override
+    public Page<Contact> getByGroup(User user, ContactGroup group, int page, int pagesize, String sortby,
+            String direction) {
+        return databaseconnectivity.findByUserAndContactGroup(user, group, buildPageable(page, pagesize, sortby, direction));
+    }
+
+    @Override
+    public Page<Contact> getByTag(User user, String tag, int page, int pagesize, String sortby, String direction) {
+        return databaseconnectivity.findByUserAndTag(user, tag, buildPageable(page, pagesize, sortby, direction));
+    }
+
+    @Override
+    public List<String> getDistinctTags(User user) {
+        return databaseconnectivity.findDistinctTags(user);
     }
 }

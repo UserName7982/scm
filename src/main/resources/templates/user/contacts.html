@@ -21,6 +21,15 @@
                     <a data-th-href="@{'/user/contacts/favourites'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-star text-yellow-500"></i> Favourites</a>
                     <a data-th-href="@{'/user/contacts/import'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-file-import"></i> Import CSV</a>
                     <a data-th-href="@{'/user/contacts/export'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-file-export"></i> Export CSV</a>
+                    <a data-th-href="@{'/user/groups'}" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"><i class="fa-solid fa-layer-group"></i> Manage Groups</a>
+                </div>
+                <div class="mb-4 flex flex-wrap items-center gap-2 text-sm" data-th-if="${!#lists.isEmpty(groups) or !#lists.isEmpty(allTags)}">
+                    <span class="text-gray-500" data-th-if="${!#lists.isEmpty(groups)}">Groups:</span>
+                    <a data-th-each="g : ${groups}" data-th-href="@{'/user/contacts/group/' + ${g.id}}"
+                        class="px-2 py-0.5 rounded bg-blue-100 text-blue-800 hover:bg-blue-200" data-th-text="${g.name}"></a>
+                    <span class="text-gray-500 ml-2" data-th-if="${!#lists.isEmpty(allTags)}">Tags:</span>
+                    <a data-th-each="t : ${allTags}" data-th-href="@{/user/contacts/tag/{t}(t=${t})}"
+                        class="px-2 py-0.5 rounded bg-gray-200 text-gray-700 hover:bg-gray-300" data-th-text="'#' + ${t}"></a>
                 </div>
                 <form data-th-action="@{'/user/contacts/search'}" class="mb-4 flex flex-col md:flex-row gap-4">
                     <div class="flex-grow">
@@ -67,6 +76,12 @@
                                         <div class="text-base font-semibold" data-th-text="*{name}">Neil Sims</div>
                                         <div class="font-normal text-gray-500 dark:text-gray-400"
                                             data-th-text="*{email}">neil.sims@flowbite.com</div>
+                                        <div class="mt-1 flex flex-wrap gap-1">
+                                            <a data-th-if="*{contactGroup != null}" data-th-href="@{'/user/contacts/group/' + *{contactGroup.id}}"
+                                                class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800" data-th-text="*{contactGroup.name}"></a>
+                                            <a data-th-each="t : *{tags}" data-th-href="@{/user/contacts/tag/{t}(t=${t})}"
+                                                class="text-xs px-2 py-0.5 rounded bg-gray-200 text-gray-700" data-th-text="'#' + ${t}"></a>
+                                        </div>
                                     </div>
                                 </th>
                                 <td class="px-6 py-4">

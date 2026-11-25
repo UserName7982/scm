@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.scm.entity.Contact;
+import com.scm.entity.ContactGroup;
 import com.scm.entity.User;
 
 
@@ -41,5 +42,11 @@ public interface contactservice {
     List<Contact> getAllForUser(User user);
 
     boolean isDuplicate(User user, String email, String phoneno);
+
+    Page<Contact> getByGroup(User user, ContactGroup group, int page, int pagesize, String sortby, String direction);
+
+    Page<Contact> getByTag(User user, String tag, int page, int pagesize, String sortby, String direction);
+
+    List<String> getDistinctTags(User user);
 
 }

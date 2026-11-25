@@ -26,10 +26,11 @@
 
                 <div class="mt-6 text-sm text-gray-600 dark:text-gray-300">
                     <p class="font-semibold mb-1">Expected columns (first row must be the header):</p>
-                    <pre class="bg-gray-100 dark:bg-gray-700 rounded p-3 overflow-x-auto">name,email,phone,address,description,favourite
-Asha Verma,asha@example.com,9876543210,Delhi,College friend,true</pre>
+                    <pre class="bg-gray-100 dark:bg-gray-700 rounded p-3 overflow-x-auto">name,email,phone,address,description,favourite,group,tags
+Asha Verma,asha@example.com,9876543210,Delhi,College friend,true,Friends,"college;vip"</pre>
                     <ul class="list-disc ml-5 mt-3 space-y-1">
                         <li><b>name, email, phone</b> are required. Phone must be exactly 10 digits.</li>
+                        <li><b>group</b> (created if missing) and <b>tags</b> (separated by ; or ,) are optional.</li>
                         <li>Rows that duplicate an existing email or phone are skipped.</li>
                         <li>Tip: use <a class="text-blue-600 underline" data-th-href="@{'/user/contacts/export'}">Export CSV</a>
                             to get a file in the right format.</li>

@@ -9,7 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.scm.Services.GroupService;
 import com.scm.Services.services;
 import com.scm.entity.User;
 import com.scm.helper.ResourcesNotFound;
@@ -22,6 +24,9 @@ import com.scm.repositories.userRepo;
 public class UserserviceImpl implements services{
 
     @Autowired
+    private GroupService groupService;
+
+   @Autowired
    private userRepo databaseconnectivity;
 
    @Autowired
@@ -63,9 +68,12 @@ public class UserserviceImpl implements services{
 
     }  
     @Override
+    @Transactional
     public void deleteUser(String id) {
         User user1=databaseconnectivity.findById(id).orElseThrow(()-> new ResourcesNotFound("user not found"));
-        databaseconnectivity.delete(user1);
+        groupService.deleteAllForUser(user1);   // groups reference the user, so remove them first
+        User fresh=databaseconnectivity.findById(id).orElseThrow(()-> new ResourcesNotFound("user not found"));
+        databaseconnectivity.delete(fresh);
     }
 
     @Override

@@ -31,8 +31,11 @@ import com.scm.Services.services;
 import com.scm.Userform.contactform;
 import com.scm.Userform.contactsearchform;
 import com.scm.entity.Contact;
+import com.scm.entity.ContactGroup;
 import com.scm.entity.User;
+import com.scm.Services.GroupService;
 import com.scm.helper.CsvHelper;
+import com.scm.helper.TagHelper;
 import com.scm.helper.Helper;
 import com.scm.helper.Message;
 import com.scm.helper.MessageType;
@@ -62,6 +65,28 @@ public class contactcontroller {
     @Autowired
     private services uServices;
 
+    @Autowired
+    private GroupService groupService;
+
+    /** Groups for the add/edit dropdowns. */
+    private void addGroupList(Model model, User user) {
+        model.addAttribute("groups", groupService.list(user));
+    }
+
+    /** Groups and tags shown as filter chips above the contact list. */
+    private void addListExtras(Model model, User user) {
+        model.addAttribute("groups", groupService.list(user));
+        model.addAttribute("allTags", contactservice.getDistinctTags(user));
+    }
+
+    /** Resolves the chosen group id; null when none chosen. Throws 404 if it is not the user's group. */
+    private ContactGroup resolveGroup(String groupId, User user) {
+        if (groupId == null || groupId.isBlank()) {
+            return null;
+        }
+        return groupService.getOwned(groupId, user);
+    }
+
     /** Loads a contact only if it belongs to the logged-in user, otherwise 404. */
     private Contact ownedContact(String id, Authentication authentication) {
         User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
@@ -73,7 +98,8 @@ public class contactcontroller {
     }
 
     @RequestMapping("/add")
-    public String addcontact(Model model) {
+    public String addcontact(Model model, Authentication authentication) {
+        addGroupList(model, uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication)));
         contactform fContactform = new contactform();
         model.addAttribute("contactform", fContactform);
         return "user/addcontact";
@@ -81,7 +107,7 @@ public class contactcontroller {
 
     @RequestMapping(value = "/adds", method = RequestMethod.POST)
     public String savecontact(@Valid @ModelAttribute contactform ContactForm, BindingResult result, HttpSession session,
-            Authentication authentication) {
+            Authentication authentication, Model model) {
 
         String username = Helper.getUserByEmail(authentication);
         User user = uServices.getUserByEmailsUser(username);
@@ -97,7 +123,10 @@ public class contactcontroller {
             }
         }
 
+        ContactGroup chosenGroup = result.hasErrors() ? null : resolveGroup(ContactForm.getGroupId(), user);
+
         if (result.hasErrors()) {
+            addGroupList(model, user);
             return "user/addcontact";
         }
 
@@ -120,6 +149,8 @@ public class contactcontroller {
         contact.setPicture(fileurl);
         contact.setUser(user);
         contact.setContactimagepublicid(filename);
+        contact.setContactGroup(chosenGroup);
+        contact.setTags(TagHelper.parse(ContactForm.getTags()));
         contactservice.save(contact);
 
         Message message = Message.builder().content("Contact Added Successfully").messageType(MessageType.green)
@@ -144,6 +175,7 @@ public class contactcontroller {
         model.addAttribute("basePath", "/user/contacts");
         model.addAttribute("favouritesView", false);
         model.addAttribute("contactsearchform", new contactsearchform());
+        addListExtras(model, userByEmailsUser);
         return "user/contacts";
     }
 
@@ -200,6 +232,9 @@ public class contactcontroller {
         contacts.setDiscreption(contact.getDiscreption());
         contacts.setFavourite(contact.isFavourite());
         contacts.setContactimg(contact.getPicture());
+        contacts.setGroupId(contact.getContactGroup() == null ? null : contact.getContactGroup().getId());
+        contacts.setTags(TagHelper.join(contact.getTags(), ", "));
+        addGroupList(model, uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication)));
         model.addAttribute("contactform", contacts);
         model.addAttribute("contactid", id);
         return "user/update_contact_view";
@@ -212,8 +247,10 @@ public class contactcontroller {
 
                 Contact contact = ownedContact(id, authentication);
 
+                User currentUser = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
                 if(bindingResult.hasErrors()){
                     model.addAttribute("contactid", id);
+                    addGroupList(model, currentUser);
                     return "user/update_contact_view";
                 }
                 
@@ -226,6 +263,8 @@ public class contactcontroller {
         contact.setDiscreption(update.getDiscreption());
         contact.setFavourite(update.isFavourite());
         contact.setPhoneno(update.getPhoneno());
+        contact.setContactGroup(resolveGroup(update.getGroupId(), currentUser));
+        contact.setTags(TagHelper.parse(update.getTags()));
         // contact.setPicture(update.getContactimg());
         // contactform contactss = new contactform();
         if (update.getPicture() != null && !update.getPicture().isEmpty()) {
@@ -242,6 +281,49 @@ public class contactcontroller {
         session.setAttribute("message",
                 Message.builder().content("Updated Successfully!!").messageType(MessageType.green).build());
         return "redirect:/user/contacts/view/"+id;
+    }
+
+    // ---------------------------------------------------------------- groups & tags
+
+    @GetMapping("/group/{groupId}")
+    public String byGroup(@PathVariable("groupId") String groupId,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pagesize", defaultValue = "10") int pagesize,
+            @RequestParam(value = "sortby", defaultValue = "name") String sortby,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            Model model, Authentication authentication) {
+
+        User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
+        ContactGroup group = groupService.getOwned(groupId, user);
+        model.addAttribute("pageContact", contactservice.getByGroup(user, group, page, pagesize, sortby, direction));
+        model.addAttribute("pageTitle", "Group: " + group.getName());
+        model.addAttribute("basePath", "/user/contacts/group/" + group.getId());
+        model.addAttribute("favouritesView", false);
+        model.addAttribute("contactsearchform", new contactsearchform());
+        addListExtras(model, user);
+        return "user/contacts";
+    }
+
+    @GetMapping("/tag/{tag}")
+    public String byTag(@PathVariable("tag") String rawTag,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "pagesize", defaultValue = "10") int pagesize,
+            @RequestParam(value = "sortby", defaultValue = "name") String sortby,
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+            Model model, Authentication authentication) {
+
+        String tag = TagHelper.normalize(rawTag);
+        if (tag.isEmpty()) {
+            return "redirect:/user/contacts";
+        }
+        User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
+        model.addAttribute("pageContact", contactservice.getByTag(user, tag, page, pagesize, sortby, direction));
+        model.addAttribute("pageTitle", "Tag: #" + tag);
+        model.addAttribute("basePath", "/user/contacts/tag/" + tag);
+        model.addAttribute("favouritesView", false);
+        model.addAttribute("contactsearchform", new contactsearchform());
+        addListExtras(model, user);
+        return "user/contacts";
     }
 
     // ---------------------------------------------------------------- favourites
@@ -261,6 +343,7 @@ public class contactcontroller {
         model.addAttribute("basePath", "/user/contacts/favourites");
         model.addAttribute("favouritesView", true);
         model.addAttribute("contactsearchform", new contactsearchform());
+        addListExtras(model, user);
         return "user/contacts";
     }
 
@@ -286,14 +369,16 @@ public class contactcontroller {
 
         PrintWriter out = response.getWriter();
         out.write('\uFEFF'); // BOM so Excel reads UTF-8 correctly
-        out.write("name,email,phone,address,description,favourite\r\n");
+        out.write("name,email,phone,address,description,favourite,group,tags\r\n");
         for (Contact c : contacts) {
             out.write(CsvHelper.escape(c.getName()) + ","
                     + CsvHelper.escape(c.getEmail()) + ","
                     + CsvHelper.escape(c.getPhoneno()) + ","
                     + CsvHelper.escape(c.getAddress()) + ","
                     + CsvHelper.escape(c.getDiscreption()) + ","
-                    + c.isFavourite() + "\r\n");
+                    + c.isFavourite() + ","
+                    + CsvHelper.escape(c.getContactGroup() == null ? "" : c.getContactGroup().getName()) + ","
+                    + CsvHelper.escape(TagHelper.join(c.getTags(), ";")) + "\r\n");
         }
         out.flush();
     }
@@ -336,6 +421,7 @@ public class contactcontroller {
 
         User user = uServices.getUserByEmailsUser(Helper.getUserByEmail(authentication));
         int imported = 0, duplicates = 0, invalid = 0, ignored = 0;
+        Map<String, ContactGroup> groupCache = new HashMap<>();
 
         for (int i = 1; i < rows.size(); i++) {
             if (i > MAX_IMPORT_ROWS) {
@@ -365,6 +451,12 @@ public class contactcontroller {
             String fav = cell(r, col.get("favourite")).toLowerCase();
             contact.setFavourite(fav.equals("true") || fav.equals("yes") || fav.equals("1"));
             contact.setUser(user);
+            String groupName = cell(r, col.get("group"));
+            if (!groupName.isBlank()) {
+                String shortName = groupName.length() > GroupService.MAX_NAME ? groupName.substring(0, GroupService.MAX_NAME) : groupName;
+                contact.setContactGroup(groupCache.computeIfAbsent(shortName.toLowerCase(), k -> groupService.findOrCreate(user, shortName)));
+            }
+            contact.setTags(TagHelper.parse(cell(r, col.get("tags"))));
             contactservice.save(contact);
             imported++;
         }

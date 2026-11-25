@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <title>Contact Groups</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div id="content" class="min-h-screen flex flex-col items-center">
+        <div th:if="${user}" class="w-full">
+            <div data-th-replace="~{user/sidebar::sidebar}"></div>
+        </div>
+        <div class="md:pl-64 w-full max-w-3xl p-4">
+            <h1 class="text-center text-4xl font-bold mb-6 text-gray-700 dark:text-gray-200">Contact Groups</h1>
+            <div data-th-replace="message::messagebox"></div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
+                <form data-th-action="@{'/user/groups/add'}" method="post" class="flex gap-3">
+                    <input type="text" name="name" maxlength="50" required placeholder="New group name (e.g. Family)"
+                        class="flex-1 p-2.5 rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <button type="submit" class="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition">Add group</button>
+                </form>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                <p class="text-center text-gray-500" data-th-if="${#lists.isEmpty(groups)}">No groups yet. Create one above, then pick it when adding or editing a contact.</p>
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700" data-th-unless="${#lists.isEmpty(groups)}">
+                    <li class="py-3 flex flex-wrap items-center gap-3" data-th-each="g : ${groups}">
+                        <a data-th-href="@{'/user/contacts/group/' + ${g.id}}" class="font-semibold text-blue-600 hover:underline" data-th-text="${g.name}"></a>
+                        <span class="text-sm text-gray-500" data-th-text="${counts[g.id]} + ' contact(s)'"></span>
+                        <form data-th-action="@{'/user/groups/rename/' + ${g.id}}" method="post" class="flex gap-2 ml-auto">
+                            <input type="text" name="name" maxlength="50" required data-th-value="${g.name}"
+                                class="p-1.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <button type="submit" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">Rename</button>
+                        </form>
+                        <form data-th-action="@{'/user/groups/delete/' + ${g.id}}" method="post"
+                            onsubmit="return confirm('Delete this group? Its contacts are kept, just ungrouped.')">
+                            <button type="submit" class="px-3 py-1.5 text-sm rounded-lg bg-red-600 text-white hover:bg-red-500">Delete</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
