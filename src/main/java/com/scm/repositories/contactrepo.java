@@ -1,5 +1,7 @@
 package com.scm.repositories;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -58,5 +60,13 @@ public interface contactrepo extends JpaRepository<Contact, String> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Contact c set c.contactGroup = null where c.user = :user")
     void clearGroupsForUser(@Param("user") User user);
+
+    List<Contact> findByUserAndFollowUpDateLessThanEqualOrderByFollowUpDateAsc(User user, LocalDate date);
+
+    List<Contact> findByUserAndFollowUpDateBetweenOrderByFollowUpDateAsc(User user, LocalDate from, LocalDate to);
+
+    long countByUserAndFollowUpDateLessThanEqual(User user, LocalDate date);
+
+    List<Contact> findByUserAndLastContactedAtBeforeOrderByLastContactedAtAsc(User user, LocalDateTime cutoff, Pageable pageable);
 
 }

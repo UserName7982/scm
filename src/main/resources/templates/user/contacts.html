@@ -79,6 +79,9 @@
                                         <div class="mt-1 flex flex-wrap gap-1">
                                             <a data-th-if="*{contactGroup != null}" data-th-href="@{'/user/contacts/group/' + *{contactGroup.id}}"
                                                 class="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800" data-th-text="*{contactGroup.name}"></a>
+                                            <a data-th-if="*{followUpDate != null}" data-th-href="@{'/user/timeline/' + *{id}}"
+                                                class="text-xs px-2 py-0.5 rounded bg-orange-100 text-orange-800"
+                                                data-th-text="'⏰ ' + ${#temporals.format(c.followUpDate, 'dd MMM')}"></a>
                                             <a data-th-each="t : *{tags}" data-th-href="@{/user/contacts/tag/{t}(t=${t})}"
                                                 class="text-xs px-2 py-0.5 rounded bg-gray-200 text-gray-700" data-th-text="'#' + ${t}"></a>
                                         </div>
@@ -104,6 +107,9 @@
                                         <a data-th-href="@{'/user/contacts/view/' + *{id}}"
                                             class="text-blue-600 hover:text-blue-800 transition"><i
                                                 class="fa-solid fa-pen"></i></a>
+                                        <a data-th-href="@{'/user/timeline/' + *{id}}" title="Timeline and reminders"
+                                            class="text-orange-500 hover:text-orange-700 transition"><i
+                                                class="fa-solid fa-clock-rotate-left"></i></a>
                                         <button th:onclick="loaddata([[${c.id}]])"
                                             class="text-green-600 hover:text-green-800 transition"><i
                                                 class="fa-regular fa-eye"></i></button>

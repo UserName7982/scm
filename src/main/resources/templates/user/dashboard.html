@@ -51,6 +51,11 @@
                                     <p class="text-3xl" data-th-text="${totalContacts}">0</p>
                                     <p class="text-sm">Manage all your contacts here.</p>
                                 </div>
+                                <a th:href="@{'/user/reminders'}" class="block bg-orange-500 text-white rounded-lg p-4 shadow-lg hover:bg-orange-400">
+                                    <h4 class="font-semibold">Follow-ups Due</h4>
+                                    <p class="text-3xl" data-th-text="${dueCount}">0</p>
+                                    <p class="text-sm">People you planned to reach out to.</p>
+                                </a>
                                 <div class="bg-pink-500 text-white rounded-lg p-4 shadow-lg">
                                     <h4 class="font-semibold">Favourite Contacts</h4>
                                     <p class="text-3xl" data-th-text="${favouriteCount}">0</p>
@@ -67,6 +72,25 @@
                                     <p class="text-sm">Your account is currently <span
                                             th:text="${user.enabled ? 'active' : 'inactive'}">inactive</span>.</p>
                                 </div>
+                            </div>
+
+                            <!-- Reach out today -->
+                            <div class="bg-white dark:bg-gray-800 border-t-4 border-orange-500 rounded-lg shadow-lg p-4 mb-6">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="text-lg font-semibold">Reach out today</h4>
+                                    <a th:href="@{'/user/reminders'}" class="text-sm text-blue-600 hover:underline">All reminders</a>
+                                </div>
+                                <p class="text-gray-500 text-sm" th:if="${#lists.isEmpty(dueContacts)}">
+                                    Nobody is due right now. Set follow-ups from a contact's timeline (clock icon on the contacts page).</p>
+                                <ul class="divide-y divide-gray-200" th:unless="${#lists.isEmpty(dueContacts)}">
+                                    <li class="py-2 flex items-center" th:each="dc : ${dueContacts}">
+                                        <div class="flex-1">
+                                            <div class="font-semibold" th:text="${dc.name}">Name</div>
+                                            <div class="text-sm text-gray-500" th:text="${dc.followUpNote != null ? dc.followUpNote : 'Follow up'}">Note</div>
+                                        </div>
+                                        <a th:href="@{'/user/timeline/' + ${dc.id}}" class="text-sm text-blue-600 hover:underline">Open</a>
+                                    </li>
+                                </ul>
                             </div>
 
                             <!-- Favourite contacts -->

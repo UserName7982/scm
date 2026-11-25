@@ -5,6 +5,8 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -53,4 +55,16 @@ public class Contact {
     @CollectionTable(name = "contact_tags", joinColumns = @JoinColumn(name = "contact_id"))
     @Column(name = "tag", length = 30)
     private Set<String> tags = new TreeSet<>();
+
+    // ---- "Stay in touch" (relationship manager)
+    private LocalDate followUpDate;
+
+    @Column(length = 200)
+    private String followUpNote;
+
+    private LocalDateTime lastContactedAt;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Interaction> interactions = new ArrayList<>();
 }

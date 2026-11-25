@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <title>Reminders</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div id="content" class="min-h-screen flex flex-col items-center">
+        <div th:if="${user}" class="w-full">
+            <div data-th-replace="~{user/sidebar::sidebar}"></div>
+        </div>
+        <div class="md:pl-64 w-full max-w-3xl p-4">
+            <h1 class="text-center text-4xl font-bold mb-6 text-gray-700 dark:text-gray-200">Stay in Touch</h1>
+            <div data-th-replace="message::messagebox"></div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8 text-center text-gray-500" data-th-if="${nothing}">
+                <p class="text-lg mb-2">You're all caught up. 🎉</p>
+                <p class="text-sm">Open a contact's timeline to log a call or set a follow-up reminder.</p>
+                <a data-th-href="@{'/user/contacts'}" class="inline-block mt-4 text-blue-600 underline">Go to contacts</a>
+            </div>
+
+            <div data-th-each="s : ${sections}" data-th-if="${!s['contacts'].isEmpty()}"
+                data-th-class="'bg-white dark:bg-gray-800 shadow-lg rounded-lg p-5 mb-6 border-t-4 ' + ${s['border']}">
+                <h2 class="text-lg font-semibold mb-3" data-th-text="${s['title']}"></h2>
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <li class="py-3 flex flex-wrap items-center gap-3" data-th-each="c : ${s['contacts']}">
+                        <img class="w-10 h-10 rounded-full object-cover" data-th-src="${c.picture}" alt=""
+                            onerror="this.src='https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png'">
+                        <div class="flex-1 min-w-0">
+                            <a data-th-href="@{'/user/timeline/' + ${c.id}}" class="font-semibold hover:underline" data-th-text="${c.name}"></a>
+                            <div class="text-sm text-gray-500">
+                                <span data-th-if="${s['key'] == 'overdue'}" class="text-red-600" data-th-text="${daysOverdue[c.id]} + ' day(s) overdue'"></span>
+                                <span data-th-if="${s['key'] == 'cold'}" data-th-text="'Last contacted ' + ${daysSince[c.id]} + ' days ago'"></span>
+                                <span data-th-if="${s['key'] == 'upcoming'}" data-th-text="${#temporals.format(c.followUpDate, 'EEE, dd MMM')}"></span>
+                                <span data-th-if="${c.followUpNote != null and s['key'] != 'cold'}" data-th-text="'· ' + ${c.followUpNote}"></span>
+                            </div>
+                        </div>
+                        <form data-th-if="${s['key'] != 'cold'}" data-th-action="@{'/user/reminders/done/' + ${c.id}}" method="post" class="flex gap-1">
+                            <select name="type" class="p-1.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                <option data-th-each="t : ${types}" data-th-value="${t.name()}" data-th-text="${t.label}"></option>
+                            </select>
+                            <button type="submit" class="px-3 py-1.5 text-sm rounded-lg bg-green-600 text-white hover:bg-green-500">Done</button>
+                        </form>
+                        <form data-th-if="${s['key'] == 'overdue' or s['key'] == 'today'}" data-th-action="@{'/user/reminders/snooze/' + ${c.id}}" method="post">
+                            <button type="submit" class="px-3 py-1.5 text-sm rounded-lg border border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">Snooze 7d</button>
+                        </form>
+                        <a data-th-if="${s['key'] == 'cold'}" data-th-href="@{'/user/timeline/' + ${c.id}}"
+                            class="px-3 py-1.5 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-500">Reach out</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

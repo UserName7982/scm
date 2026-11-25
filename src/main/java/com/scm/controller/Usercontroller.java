@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.scm.Services.RelationshipService;
 import com.scm.Services.contactservice;
 import com.scm.Services.services;
 import com.scm.entity.User;
@@ -19,6 +20,9 @@ import com.scm.helper.ResourcesNotFound;
 @Controller
 @RequestMapping("/user")
 public class Usercontroller {
+
+    @Autowired
+    private RelationshipService relationships;
 
     @Autowired
     private contactservice contactservice;
@@ -36,6 +40,8 @@ public class Usercontroller {
 
        
         model.addAttribute("totalContacts", contactservice.countByUser(user));
+        model.addAttribute("dueCount", relationships.dueCount(user));
+        model.addAttribute("dueContacts", relationships.dueOrOverdue(user).stream().limit(5).toList());
         model.addAttribute("favouriteCount", contactservice.countFavourites(user));
         model.addAttribute("favouriteContacts", contactservice.getFavourites(user, 0, 5, "name", "asc").getContent());
 

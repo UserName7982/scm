@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" th:replace="~{base :: parent(~{::#content},~{::title})}">
+
+<head>
+    <title>Contact Timeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white">
+    <div id="content" class="min-h-screen flex flex-col items-center">
+        <div th:if="${user}" class="w-full">
+            <div data-th-replace="~{user/sidebar::sidebar}"></div>
+        </div>
+        <div class="md:pl-64 w-full max-w-3xl p-4">
+            <div data-th-replace="message::messagebox"></div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-6 flex items-center gap-4">
+                <img class="w-16 h-16 rounded-full object-cover" data-th-src="${contact.picture}" alt=""
+                    onerror="this.src='https://toppng.com/uploads/preview/instagram-default-profile-picture-11562973083brycehrmyv.png'">
+                <div class="flex-1">
+                    <h1 class="text-2xl font-bold" data-th-text="${contact.name}">Name</h1>
+                    <p class="text-sm text-gray-500"><i class="fa-solid fa-phone"></i> <span data-th-text="${contact.phoneno}"></span></p>
+                    <p class="text-sm text-gray-500" data-th-if="${contact.lastContactedAt != null}">
+                        Last contacted: <span data-th-text="${#temporals.format(contact.lastContactedAt, 'dd MMM yyyy')}"></span></p>
+                    <p class="text-sm text-gray-500" data-th-if="${contact.lastContactedAt == null}">Not contacted yet. Log your first interaction below.</p>
+                </div>
+                <a data-th-href="@{'/user/contacts'}" class="text-sm text-blue-600 underline">Back to contacts</a>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 border-t-4 border-orange-500 shadow-lg rounded-lg p-6 mb-6">
+                <h2 class="text-lg font-semibold mb-3"><i class="fa-solid fa-bell text-orange-500"></i> Follow-up reminder</h2>
+                <div data-th-if="${contact.followUpDate != null}" class="mb-3 flex flex-wrap items-center gap-3">
+                    <span>Due <b data-th-text="${#temporals.format(contact.followUpDate, 'dd MMM yyyy')}"></b></span>
+                    <span class="text-gray-500" data-th-if="${contact.followUpNote != null}" data-th-text="'(' + ${contact.followUpNote} + ')'"></span>
+                    <form data-th-action="@{'/user/timeline/' + ${contact.id} + '/followup/clear'}" method="post" class="ml-auto">
+                        <button type="submit" class="text-sm text-red-600 underline">Remove</button>
+                    </form>
+                </div>
+                <form data-th-action="@{'/user/timeline/' + ${contact.id} + '/followup'}" method="post" class="flex flex-wrap gap-2">
+                    <input type="date" name="date" required data-th-attr="min=${today}" class="p-2.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <input type="text" name="note" maxlength="200" placeholder="Why? (e.g. Ask about the interview)" class="flex-1 min-w-0 p-2.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <button type="submit" class="px-4 py-2 text-sm rounded-lg text-white bg-orange-500 hover:bg-orange-600">Set reminder</button>
+                </form>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6 mb-6">
+                <h2 class="text-lg font-semibold mb-3">Log an interaction</h2>
+                <form data-th-action="@{'/user/timeline/' + ${contact.id} + '/log'}" method="post" class="flex flex-wrap gap-2">
+                    <select name="type" class="p-2.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <option data-th-each="t : ${types}" data-th-value="${t.name()}" data-th-text="${t.label}"></option>
+                    </select>
+                    <input type="date" name="date" data-th-value="${today}" data-th-attr="max=${today}" class="p-2.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <input type="text" name="note" maxlength="500" placeholder="What did you talk about?" class="flex-1 min-w-0 p-2.5 text-sm rounded-lg border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <button type="submit" class="px-4 py-2 text-sm rounded-lg text-white bg-blue-600 hover:bg-blue-700">Log</button>
+                </form>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-6">
+                <h2 class="text-lg font-semibold mb-4">Timeline</h2>
+                <p class="text-gray-500 text-center" data-th-if="${#lists.isEmpty(interactions)}">Nothing logged yet.</p>
+                <ol class="relative border-l border-gray-300 dark:border-gray-600 ml-3" data-th-unless="${#lists.isEmpty(interactions)}">
+                    <li class="mb-6 ml-6" data-th-each="i : ${interactions}">
+                        <span class="absolute -left-3 flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full">
+                            <i class="fa-solid text-xs text-blue-700" data-th-classappend="${i.type.icon}"></i>
+                        </span>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold" data-th-text="${i.type.label}"></span>
+                            <span class="text-sm text-gray-500" data-th-text="${#temporals.format(i.occurredAt, 'dd MMM yyyy, HH:mm')}"></span>
+                            <form data-th-action="@{'/user/timeline/' + ${contact.id} + '/delete/' + ${i.id}}" method="post" class="ml-auto"
+                                onsubmit="return confirm('Remove this entry?')">
+                                <button type="submit" class="text-xs text-red-600"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300" data-th-if="${i.note != null}" data-th-text="${i.note}"></p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
